@@ -1,0 +1,10 @@
+# MeshSDF directories
+mesh-sdf/data/
+mesh-sdf/experiments/
+mesh-sdf/splits/
+
+# Siren directories
+/siren/data/
+/siren/generated_data/
+/siren/logs/
+/siren/.ipynb_checkpoints/
