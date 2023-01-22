@@ -11,7 +11,7 @@ import pdb
 import lib
 from lib.workspace import *
 #from lib.models.decoder_relu import *
-from lib.models.decoder_siren import *
+from lib.models.equicoder import EquiCoder, DecoderInner
 from lib.utils import *
 from lib.mesh import *
 
@@ -58,7 +58,8 @@ def main_function(experiment_directory):
     code_reg_lambda = get_spec_with_default(specs, "CodeRegularizationLambda", 1e-4)
 
     code_bound = get_spec_with_default(specs, "CodeBound", None)
-    decoder = DeepSDF(latent_size, **specs["NetworkSpecs"]).cuda()
+    # decoder = EquiCoder(latent_size).cuda()
+    decoder = DecoderInner(z_dim=latent_size, c_dim=0).cuda()
 
     print("training with {} GPU(s)".format(torch.cuda.device_count()))
     decoder = torch.nn.DataParallel(decoder)

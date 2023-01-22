@@ -15,6 +15,9 @@ from lib.models.decoder_siren import *
 from lib.utils import *
 from lib.mesh import *
 
+from skimage.measure import marching_cubes
+import meshio
+
 def main_function(experiment_directory):
 
     specs = load_experiment_specifications(experiment_directory)
@@ -139,6 +142,15 @@ def main_function(experiment_directory):
         # save 3D+t SDF to matlab file
         sio.savemat(filename + '.mat', {'sdf_vid':output_sdf})
         print('Saved ' + filename + '.mat')        
+
+        # save 3D+t SDF to vtk files (for the matlab-weary)
+        for time_id, sdf_at_t in enumerate(output_sdf):
+            verts, faces, normals, values = marching_cubes(sdf_at_t, level=0)
+            meshio.Mesh(
+                verts,
+                {'triangle': faces},
+                point_data={'normals': normals, 'signed_distance': values}
+            ).write(f"{filename}_t_{time_id}.vtk")
 
     print("Done!")
 
