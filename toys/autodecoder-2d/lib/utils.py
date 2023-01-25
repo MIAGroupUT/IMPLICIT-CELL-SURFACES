@@ -11,8 +11,9 @@ import numpy as np
 import imageio
 
 import scipy.io as sio # matlab loading
+#from tqdm import tqdm # progress bar
+from lib.shapegen import gen_shape_sdf # shape generator
 
-from tqdm import tqdm # progress bar
 
 def compute_normal_consistency(gt_normal, pred_normal):
     """
@@ -347,10 +348,11 @@ def fourier_transform(x, L=5):
     return transformed_x
 
 
-def decode_sdf(decoder, latent_vector, queries):
+def decode_sdf(decoder, latent_vector, rotation_vector, queries):
     num_samples = queries.shape[0]
     latent_repeat = latent_vector.expand(num_samples, -1)
-    sdf = decoder(latent_repeat, queries)
+    rotation_repeat = rotation_vector.expand(num_samples, -1)
+    sdf = decoder(latent_repeat, rotation_repeat, queries)
     return sdf
 
 
@@ -361,17 +363,19 @@ def get_instance_filenames(data_source):
     return file_list
     
     
-def unpack_sdf_samples_fraction(filename, fraction, sequence_id=0):
+def unpack_sdf_samples_fraction(shape_class, fraction, sdf_id, angle_deg):
 
-    print('Processing', filename)
+    print('Generating SDF id {}, shape class: {}, rotation: {} deg'.format(sdf_id, shape_class, angle_deg))
+    
+    sdf = gen_shape_sdf(shape_class, angle_deg).astype(np.float32)
     
     # load matlab file
     #sdf = np.asarray([sio.loadmat(filename)['sdf_norm']], dtype=np.float32)     
     #sdf = np.squeeze(sdf)
     
     # load matlab file
-    sdf = np.asarray([sio.loadmat(filename)['sdf_norm']], dtype=np.float32)
-    sdf = np.squeeze(sdf)
+    #sdf = np.asarray([sio.loadmat(filename)['sdf_norm']], dtype=np.float32)
+    #sdf = np.squeeze(sdf)
 
     ###frames = []  # or "scenes"
     # tqdm() - prograss bar

@@ -118,7 +118,7 @@ def convert_sdf_samples_to_mesh(
 
 
 def create_SDF(
-    decoder, latent_vec, N=np.array([128,128]), max_batch=64**3, offset=None, scale=None):
+    decoder, latent_vec, rotation_vec, N=np.array([128,128]), max_batch=64**3, offset=None, scale=None):
 
     decoder.eval()
     
@@ -152,7 +152,7 @@ def create_SDF(
     while head < num_samples:
         sample_subset = samples[head : min(head + max_batch, num_samples), 0:2].cuda()
         samples[head : min(head + max_batch, num_samples), 2] = (
-            decode_sdf(decoder, latent_vec, sample_subset)
+            decode_sdf(decoder, latent_vec, rotation_vec, sample_subset)
             .squeeze(1)
             .detach()
             .cpu()

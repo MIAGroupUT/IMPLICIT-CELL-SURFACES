@@ -12,6 +12,7 @@ class DeepSDF(nn.Module):
     def __init__(
         self,
         latent_size,
+        latent_size2,
         dims,
         dropout=None,
         dropout_prob=0.0,
@@ -29,9 +30,9 @@ class DeepSDF(nn.Module):
         def make_sequence():
             return []
         if positional_encoding is True:
-            dims = [latent_size + 2*fourier_degree*3] + dims + [1]
+            dims = [latent_size + latent_size2 + 2*fourier_degree*3] + dims + [1]
         else:
-            dims = [latent_size + 2] + dims + [1]
+            dims = [latent_size + latent_size2 + 2] + dims + [1]
 
         self.positional_encoding = positional_encoding
         self.fourier_degree = fourier_degree
@@ -79,16 +80,20 @@ class DeepSDF(nn.Module):
         self.th = nn.Tanh()
 
     # input: N x (L+3)
-    def forward(self, latent, xy):
+    def forward(self, latent, latent2, xy):
 
         if self.positional_encoding:
             xy = fourier_transform(xy, self.fourier_degree)
-        input = torch.cat([latent, xy.cuda()], dim=1)
+        input = torch.cat([latent, latent2, xy.cuda()], dim=1)
 
         if input.shape[1] > 2 and self.latent_dropout:
-            latent_vecs = input[:, :-2]
+            latent_vecs = input[:, :-(2+latent_size2)]
             latent_vecs = F.dropout(latent_vecs, p=0.2, training=self.training)
-            x = torch.cat([latent_vecs, xy], 1)
+            
+            latent_vecs2 = input[:, :-2]
+            latent_vecs2 = F.dropout(latent_vecs2, p=0.2, training=self.training)
+            
+            x = torch.cat([latent_vecs, latent_vecs2, xy], 1)
         else:
             x = input
 

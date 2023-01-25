@@ -19,12 +19,11 @@ from lib.utils import *
 class InMemorySDFSamplesFraction(torch.utils.data.Dataset):
     def __init__(
         self,
-        data_source,
-        fraction = 1.0
+        fraction = 1.0,
+        no_rotations = 10 # generate this many rotations
     ):
         self.fraction = fraction
-        self.data_source = data_source
-        self.matfiles = get_instance_filenames(data_source)    
+        self.no_rotations = no_rotations    
         
         #self.sample_size = int(self.fraction * len(self.dataset[0][0]))    
 
@@ -37,12 +36,18 @@ class InMemorySDFSamplesFraction(torch.utils.data.Dataset):
             
         # Load the whole dataset into CPU memory
         self.dataset = []
-        print("loading dataset into memory (takes approx. 2:00 [min] for 50 samples)")
-        for idx in range(len(self.matfiles)):
-            filename = os.path.join(self.data_source, self.matfiles[idx])
-            self.dataset.append(
-                (unpack_sdf_samples_fraction(filename, self.fraction, sequence_id=idx), idx, self.matfiles[idx])
-            )
+        rotations_deg = np.linspace(0, 180, num=no_rotations, endpoint=False)
+        shape_classes = ['square', 'triangle']
+        #shape_class = 0
+        print("Generating and loading dataset into memory")
+        for shape_class in range(2):
+            for idx in range(no_rotations):
+                #filename = os.path.join(self.data_source, self.matfiles[idx])
+                self.dataset.append(
+                    (unpack_sdf_samples_fraction(shape_classes[shape_class], self.fraction,
+                                                 sdf_id=idx, 
+                                                 angle_deg=rotations_deg[idx]), shape_class, idx)
+                )
 
     def __len__(self): # total number of training shapes
         return len(self.dataset)
@@ -52,7 +57,7 @@ class InMemorySDFSamplesFraction(torch.utils.data.Dataset):
         return self.dataset[idx]
         
 
-class InMemorySDFSamples(torch.utils.data.Dataset):
+'''class InMemorySDFSamples(torch.utils.data.Dataset):
     def __init__(
         self,
         data_source,
@@ -75,10 +80,10 @@ class InMemorySDFSamples(torch.utils.data.Dataset):
         return len(self.matfiles)
 
     def __getitem__(self, idx):
-        return self.dataset[idx]
+        return self.dataset[idx]'''
 
 
-class SDFSamples(torch.utils.data.Dataset):
+'''class SDFSamples(torch.utils.data.Dataset):
     def __init__(
         self,
         data_source,
@@ -95,10 +100,10 @@ class SDFSamples(torch.utils.data.Dataset):
         filename = os.path.join(
             self.data_source, self.matfiles[idx]
         )
-        return unpack_sdf_samples(filename, self.subsample), idx, self.matfiles[idx]
+        return unpack_sdf_samples(filename, self.subsample), idx, self.matfiles[idx]'''
 
 
-class RGBA2SDF(torch.utils.data.Dataset):
+'''class RGBA2SDF(torch.utils.data.Dataset):
     def __init__(
         self,
         data_source,
@@ -143,4 +148,4 @@ class RGBA2SDF(torch.utils.data.Dataset):
         metadata_filename = os.path.join(self.data_source, mesh_name.replace("samples", "renders"), "rendering_metadata.txt")
         intrinsic, extrinsic = get_camera_matrices(metadata_filename, id)
 
-        return sdf_samples, RGBA, intrinsic, extrinsic, mesh_name
+        return sdf_samples, RGBA, intrinsic, extrinsic, mesh_name'''
