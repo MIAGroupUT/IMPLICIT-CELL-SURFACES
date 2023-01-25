@@ -29,6 +29,7 @@ The implementation was tested on AMD EPYC 7713 64-Core Processor, 512 GB RAM, NV
     
 ### Download
 * [Source Code, Pre-Trained Models, and Example Datasets \[ZIP\]](https://cbia.fi.muni.cz/files/simulations/implicit_shapes/impl_sdf_source.zip) (1.5 GB)
+* [Full Training Dataset \[ZIP\]](https://cbia.fi.muni.cz/simulator/data/train_sdfs.zip) (24 GB)
     
 ### Quick Start
 
