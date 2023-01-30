@@ -16,7 +16,6 @@ from lib.utils import *
 from lib.mesh import *
 
 
-
 def main_function(experiment_directory):
 
     specs = load_experiment_specifications(experiment_directory)
@@ -61,7 +60,7 @@ def main_function(experiment_directory):
     
     
     # load decoder
-    decoder = DeepSDF(latent_size, latent_size2, **specs["NetworkSpecs"])
+    decoder = DeepSDF(latent_size, **specs["NetworkSpecs"])
     #print("training with {} GPU(s)".format(torch.cuda.device_count()))
     decoder = torch.nn.DataParallel(decoder)  
     
@@ -84,6 +83,7 @@ def main_function(experiment_directory):
     #learned_vectors2 = np.asarray([sio.loadmat(experiment_directory + 
     #                     '/latent_vecs_rot.mat')['lat_vecs_rot']], dtype=np.float32)
 
+    learned_vectors2 = np.array([learned_vectors2])
     # total number of frames across all sequences
     num_shape_classes = learned_vectors.shape[0]
     num_rotations = learned_vectors2.shape[0]
@@ -125,7 +125,54 @@ def main_function(experiment_directory):
     reconstruction_dims = specs["ReconstructionDims"]
     
     # Reconstruction -----------------------------------------------------------
-    print("Reconstructing {} shapes with resolution {}".format(num_shape_classes*num_rotations,reconstruction_dims))
+    # print("Reconstructing {} shapes with resolution {}".format(num_shape_classes,reconstruction_dims))
+    
+    # # size of one reconstruction batch
+    # rec_size = specs["ReconstructionSubsetSize"]
+                       
+    # # prepare normalized time coordinates   
+    # #t = np.asarray([scene for scene in range(num_frames_per_sequence_to_reconstruct)],
+    # #    dtype='float32')
+    # # normalize to [-1, 1]
+    # #t = (t - np.min(t)) / (np.max(t) - np.min(t)) * 2. - 1.
+    # #time = torch.from_numpy(t).float().cuda() 
+   
+    # for shape_class in range(learned_vectors.shape[0]):
+    #     #for rotation in range(learned_vectors2.shape[0]):
+    #     output_sdf = np.zeros([reconstruction_dims[0], reconstruction_dims[1]],
+    #         dtype='float32')
+    #     latent = torch.from_numpy(learned_vectors[shape_class,:]).float().cuda()
+    #     #latent2 = torch.from_numpy(learned_vectors2[rotation,:]).float().cuda()
+    #     #latent = torch.from_numpy(np.expand_dims(learned_vectors,0)[shape_class,:]).float().cuda()
+    #     latent2 = torch.from_numpy(np.expand_dims(learned_vectors2[shape_class],0)).float().cuda()
+    #     print('\nlat. vec. preview:', 
+    #         latent[:5].detach().cpu().numpy().astype(np.float32), "...\n")   
+    #     print('\nrot. vec. preview:', 
+    #         latent2[:5].detach().cpu().numpy().astype(np.float32), "...\n") 
+       
+    #     filename = get_output_filename(reconstruction_dir, "rec") + \
+    #         "_id_" + str(shape_class).zfill(3) + "_rot_" + \
+    #         str(latent2[0].detach().cpu().numpy().astype(np.float32)).zfill(3)
+    #     print("Reconstructing shape {}...".format(shape_class))
+    #     with torch.no_grad():
+    #         output_sdf = create_SDF(decoder, latent, latent2,
+    #                                      N=reconstruction_dims,
+    #                                      max_batch=rec_size)         
+    #     # save SDF to matlab file
+    #     sio.savemat(filename + '.mat', {'sdf_norm':output_sdf})
+    #     print('Saved ' + filename + '.mat')        
+
+    # print("Done!")
+    
+    
+    # Generating new rotations ------------------------------------------------
+    #from math import pi
+    
+    rotations_rad = np.linspace(-2*math.pi, 2*math.pi, num=50, endpoint=True, dtype=np.float32)
+    #rotations_rad = np.array([math.pi/2]) # reproduces the issue
+    #rotations_rad = np.zeros(1) # works
+    
+    print("\n\n\n\nReconstructing {} shapes with resolution {}".format(num_shape_classes,reconstruction_dims))
     
     # size of one reconstruction batch
     rec_size = specs["ReconstructionSubsetSize"]
@@ -137,31 +184,38 @@ def main_function(experiment_directory):
     #t = (t - np.min(t)) / (np.max(t) - np.min(t)) * 2. - 1.
     #time = torch.from_numpy(t).float().cuda() 
    
+    
     for shape_class in range(learned_vectors.shape[0]):
-        for rotation in range(learned_vectors2.shape[0]):
+        for rot_idx in range(rotations_rad.size):
             output_sdf = np.zeros([reconstruction_dims[0], reconstruction_dims[1]],
                 dtype='float32')
             latent = torch.from_numpy(learned_vectors[shape_class,:]).float().cuda()
             #latent2 = torch.from_numpy(learned_vectors2[rotation,:]).float().cuda()
             #latent = torch.from_numpy(np.expand_dims(learned_vectors,0)[shape_class,:]).float().cuda()
-            latent2 = torch.from_numpy(np.expand_dims(learned_vectors2[rotation],0)).float().cuda()
+            #latent2 = torch.from_numpy(np.expand_dims(learned_vectors2[shape_class],0)).float().cuda()
+            '''latent2
+            tensor([-1.0541], device='cuda:0')
+
+            latent2.shape
+            torch.Size([1])'''
             print('\nlat. vec. preview:', 
                 latent[:5].detach().cpu().numpy().astype(np.float32), "...\n")   
             print('\nrot. vec. preview:', 
-                latent2[:5].detach().cpu().numpy().astype(np.float32), "...\n") 
+                rotations_rad[rot_idx], "...\n") 
            
-            filename = get_output_filename(reconstruction_dir, "rec") + \
-                "_id_" + str(shape_class).zfill(3) + "_rot_" + str(rotation).zfill(3)
-            print("Reconstructing shape {},{}...".format(shape_class,rotation))
+            filename = get_output_filename(reconstruction_dir, "new") + \
+                "_id_" + str(shape_class).zfill(3) + "_" + str(rot_idx).zfill(3) + "_rot_" + \
+                str(np.around(math.degrees(rotations_rad[rot_idx])).astype(np.int32)).zfill(3)
+            print("Reconstructing shape {}...".format(shape_class))
             with torch.no_grad():
-                output_sdf = create_SDF(decoder, latent, latent2,
-                                             N=reconstruction_dims,
-                                             max_batch=rec_size)         
+                output_sdf = create_SDF(decoder, latent,
+                                        rotations_rad[rot_idx],
+                                        N=reconstruction_dims,
+                                        max_batch=rec_size)         
             # save SDF to matlab file
             sio.savemat(filename + '.mat', {'sdf_norm':output_sdf})
-            print('Saved ' + filename + '.mat')        
-
-    print("Done!")
+            print('Saved ' + filename + '.mat') 
+            rot_idx += 1
 
 if __name__ == "__main__":
 

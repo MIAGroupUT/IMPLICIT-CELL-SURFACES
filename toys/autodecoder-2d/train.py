@@ -59,7 +59,7 @@ def main_function(experiment_directory):
     code_reg_lambda = get_spec_with_default(specs, "CodeRegularizationLambda", 1e-4)
 
     code_bound = get_spec_with_default(specs, "CodeBound", None)
-    decoder = DeepSDF(latent_size, latent_size2, **specs["NetworkSpecs"]).cuda()
+    decoder = DeepSDF(latent_size, **specs["NetworkSpecs"]).cuda()
 
     print("training with {} GPU(s)".format(torch.cuda.device_count()))
     decoder = torch.nn.DataParallel(decoder)
@@ -68,11 +68,13 @@ def main_function(experiment_directory):
     log_frequency = get_spec_with_default(specs, "LogFrequency", 1)
 
     sdf_dataset = lib.data.InMemorySDFSamplesFraction(sample_fraction,
-                                                      no_rotations=specs["NumRotations"])
+                                                      no_rotations=1)
 
     num_data_loader_threads = get_spec_with_default(specs, "DataLoaderThreads", 1)
     print("loading data with {} threads".format(num_data_loader_threads))
 
+    
+    # TODO turn shuffle back on
     sdf_loader = data_utils.DataLoader(
         sdf_dataset,
         batch_size=scene_per_batch,
@@ -90,11 +92,11 @@ def main_function(experiment_directory):
     )
 
     # total number of frames across all sequences
-    num_shapes_total = specs["NumRotations"] # TODO only a number of rotations for each class
+    #num_shapes_total = specs["NumRotations"] # TODO only a number of rotations for each class
     ###num_sequences = specs["NumSequences"]
     num_shape_classes = specs["NumShapeClasses"]
 
-    print("There are total of {} shapes".format(num_shapes_total))
+    print("There are total of {} shapes".format(num_shape_classes))
     print(decoder)
 
     lat_vecs = torch.nn.Embedding(num_shape_classes, latent_size).cuda()
@@ -103,12 +105,17 @@ def main_function(experiment_directory):
         0.0,
         get_spec_with_default(specs, "CodeInitStdDev", 1.0) / math.sqrt(latent_size),
     )
-    lat_vecs2 = torch.nn.Embedding(num_shapes_total, latent_size2).cuda()
-    torch.nn.init.normal_(
-        lat_vecs.weight.data,
-        0.0,
-        get_spec_with_default(specs, "CodeInitStdDev", 1.0) / math.sqrt(latent_size2),
+    lat_vecs2 = torch.nn.Embedding(1, latent_size2).cuda()
+    torch.nn.init.constant_(
+        lat_vecs2.weight.data,
+        0.3
+    #torch.nn.init.normal_(
+    #    lat_vecs2.weight.data,
+    #    0.0,
+    #    get_spec_with_default(specs, "CodeInitStdDev", 1.0) / math.sqrt(1),
     )
+    print("Rotation parameters:\n",lat_vecs2(torch.arange(0, 1,
+        dtype=torch.int).cuda()).detach().cpu())
 
     loss_l1 = torch.nn.L1Loss(reduction="sum")
     
@@ -167,6 +174,12 @@ def main_function(experiment_directory):
         )
     )
     
+    # rotation matrix (2D)
+    #def R(theta):
+    #    return torch.tensor([[torch.cos(theta), -torch.sin(theta)],
+    #                         [torch.sin(theta), torch.cos(theta)]],
+    #                        dtype=torch.float32).cuda()
+    
     # train parameterization
     for epoch in range(start_epoch, num_epochs + 1):
 
@@ -183,9 +196,12 @@ def main_function(experiment_directory):
         # TODO add shape_class and use it for fixing batch_vecs = (line 203)
         for sdf_data, shape_class, shape_id in sdf_loader:
             
+            # TODO shape_id is not needed anymore (probably)
+            
             optimizer_dec_latvecs.zero_grad()
             optimizer_all.zero_grad()
             #print(sdf_data.shape)
+            #sdf_data.shape = torch.Size([2, 65536, 3])
             num_samp_per_scene = sdf_data.shape[1]
 
             sdf_data = sdf_data.reshape(-1, 3)
@@ -197,14 +213,20 @@ def main_function(experiment_directory):
             #sdf_gt = sdf_data[:, 3].unsqueeze(1)
             xy = sdf_data[:, 0:2]
             sdf_gt = sdf_data[:, 2].unsqueeze(1)
+            
+            #xy = xy.cuda() @ R(lat_vecs2(torch.tensor(0).cuda())).T
+            #xy.requires_grad = True
 
             if enforce_minmax:
                 sdf_gt = torch.clamp(sdf_gt, minT, maxT)
 
             batch_vecs = lat_vecs(shape_class.unsqueeze(-1).repeat(1, num_samp_per_scene).view(-1).cuda())
-            batch_vecs2 = lat_vecs2(shape_id.unsqueeze(-1).repeat(1, num_samp_per_scene).view(-1).cuda())
+            #batch_vecs2 = lat_vecs2(torch.tensor(0).unsqueeze(-1).repeat(1, num_sdf_samples).view(-1).cuda())
+            batch_vecs2 = lat_vecs2(torch.tensor(0).unsqueeze(-1).view(-1).cuda())
+            #batch_vecs2 = lat_vecs2(shape_class.unsqueeze(-1).repeat(1, num_sdf_samples).view(-1).cuda())
            
-            pred_sdf = decoder(batch_vecs, batch_vecs2, xy.cuda())
+            #pred_sdf = decoder(batch_vecs, batch_vecs2, xy.cuda())
+            pred_sdf = decoder(batch_vecs, batch_vecs2, xy)
             
             if enforce_minmax:
                 pred_sdf = torch.clamp(pred_sdf, minT, maxT)
@@ -218,15 +240,16 @@ def main_function(experiment_directory):
                 ) / num_sdf_samples
                 
                 l2_size_loss2 = torch.sum(torch.norm(batch_vecs2, dim=1))
-                reg_loss = (
-                    code_reg_lambda * min(1, epoch / 100) * l2_size_loss
-                ) / num_sdf_samples
                 reg_loss2 = (
                     code_reg_lambda * min(1, epoch / 100) * l2_size_loss2
                 ) / num_sdf_samples
 
-                #batch_loss = batch_loss + reg_loss.cuda() #+ reg_loss2.cuda()
-                batch_loss = batch_loss + reg_loss.cuda() + reg_loss2.cuda()
+                batch_loss = batch_loss + reg_loss.cuda() #+ reg_loss2.cuda()
+                #batch_loss = batch_loss + reg_loss.cuda() + reg_loss2.cuda()
+
+            rot_loss = loss_l1(batch_vecs2, torch.tensor([0.2]).cuda()) 
+            
+            batch_loss = batch_loss + rot_loss
 
             batch_loss.backward()
 
@@ -242,7 +265,9 @@ def main_function(experiment_directory):
             optimizer_all.step()
 
         train_loss=running_loss/len(sdf_loader)
-        print("epoch {} / {}, loss {:.8f}".format(epoch, num_epochs, train_loss))        
+        print("epoch {} / {}, loss {:.8f}".format(epoch, num_epochs, train_loss))
+        print("Rotation parameters:\n",lat_vecs2(torch.arange(0, 1,
+            dtype=torch.int).cuda()).detach().cpu())
 
         # save progress
         if epoch % log_frequency == 0 or epoch == num_epochs:
@@ -259,9 +284,9 @@ def main_function(experiment_directory):
             
             learned_vectors2 = np.zeros([lat_vecs2.num_embeddings, lat_vecs2.embedding_dim],dtype='float32')
 
-            for _, _, shape_id in sdf_loader_reconstruction:
-                latent2 = lat_vecs2(shape_id.cuda()).squeeze(0)
-                learned_vectors2[shape_id,:] = latent2.detach().cpu().numpy().astype(np.float32)
+            #for _, shape_class, _ in sdf_loader_reconstruction:
+            latent2 = lat_vecs2(torch.tensor(0).cuda()).squeeze(0)
+            learned_vectors2[0,:] = latent2.detach().cpu().numpy().astype(np.float32)
 
             sio.savemat(experiment_directory + '/latent_vecs_rot.mat', {'lat_vecs_rot':learned_vectors2}) 
             

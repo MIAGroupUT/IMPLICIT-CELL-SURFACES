@@ -14,7 +14,6 @@
     "fourier_degree" : 5
     },
   "NumShapeClasses" : 2,
-  "NumRotations" : 10,
   "CodeLength" : 2,
   "CodeLengthRotation" : 1,
   "NumEpochs" : 4000,

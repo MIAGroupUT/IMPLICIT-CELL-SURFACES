@@ -12,7 +12,6 @@ class DeepSDF(nn.Module):
     def __init__(
         self,
         latent_size,
-        latent_size2,
         dims,
         dropout=None,
         dropout_prob=0.0,
@@ -30,15 +29,20 @@ class DeepSDF(nn.Module):
         def make_sequence():
             return []
         if positional_encoding is True:
-            dims = [latent_size + latent_size2 + 2*fourier_degree*3] + dims + [1]
+            dims = [latent_size + 2*fourier_degree*3] + dims + [1]
         else:
-            dims = [latent_size + latent_size2 + 2] + dims + [1]
+            dims = [latent_size + 2] + dims + [1]
 
         self.positional_encoding = positional_encoding
         self.fourier_degree = fourier_degree
         self.num_layers = len(dims)
         self.norm_layers = norm_layers
         self.latent_in = latent_in
+        self.theta = () #torch.tensor(0.33, dtype=torch.float32, requires_grad=True).cuda()
+        #if not torch.is_tensor(theta):
+        #    self.theta = torch.tensor(theta, dtype=torch.float32).cuda()
+        #else:
+        #    self.theta = theta.cuda()
         self.latent_dropout = latent_dropout
         if self.latent_dropout:
             self.lat_dp = nn.Dropout(0.2)
@@ -78,22 +82,33 @@ class DeepSDF(nn.Module):
         self.dropout_prob = dropout_prob
         self.dropout = dropout
         self.th = nn.Tanh()
-
+    
+    # get rotation matrix
+    def R(self, theta):
+        
+        return torch.tensor([[torch.cos(theta), -torch.sin(theta)],
+                            [torch.sin(theta), torch.cos(theta)]],
+                            dtype=torch.float32).cuda()
+        #print('THETA', self.theta)
+    
     # input: N x (L+3)
-    def forward(self, latent, latent2, xy):
+    def forward(self, latent, theta, xy):
+        
+        # rotate a set of coordinates by theta
+        # (inverse rotation by transposed matrix
+        # of coordinates results in desired counterclockwise
+        # rotation of the shape sdf)
+        #self.theta = theta
+        xy = xy @ self.R(theta).T
 
         if self.positional_encoding:
             xy = fourier_transform(xy, self.fourier_degree)
-        input = torch.cat([latent, latent2, xy.cuda()], dim=1)
+        input = torch.cat([latent, xy.cuda()], dim=1)
 
         if input.shape[1] > 2 and self.latent_dropout:
-            latent_vecs = input[:, :-(2+latent_size2)]
+            latent_vecs = input[:, :-2]
             latent_vecs = F.dropout(latent_vecs, p=0.2, training=self.training)
-            
-            latent_vecs2 = input[:, :-2]
-            latent_vecs2 = F.dropout(latent_vecs2, p=0.2, training=self.training)
-            
-            x = torch.cat([latent_vecs, latent_vecs2, xy], 1)
+            x = torch.cat([latent_vecs, xy], 1)
         else:
             x = input
 

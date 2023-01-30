@@ -139,6 +139,28 @@ def create_SDF(
     # flatten all but the last dimension
     pixel_coords = pixel_coords.reshape(-1, pixel_coords.shape[-1])
     
+    # rotation matrix (2D)
+    #def R(theta):
+    #    return np.array([[np.cos(theta), -np.sin(theta)],
+    #                         [np.sin(theta), np.cos(theta)]],
+    #                        dtype=np.float32)
+    
+    # rotate coordinates
+    #if torch.is_tensor(rotation_vec):
+    #    rotation_vec = rotation_vec.detach().cpu().numpy()  
+    #import math
+    #pixel_coords = np.around(pixel_coords @ R(math.pi/2).T,3) # !!! reproduces the issue
+    #pixel_coords = pixel_coords @ R(math.pi/2).T
+    #
+    #pixel_coords = pixel_coords @ R(rotation_vec.cpu().numpy().item()).T
+    #pixel_coords = pixel_coords @ R(rotation_vec).T
+    
+    
+    #pixel_coords = pixel_coords / np.max(np.abs(pixel_coords))
+    #pixel_coords = np.round(np.copy(pixel_coords[::-1,::]),4)
+    
+    #pixel_coords[:5:-1,:]
+    
     # paste grid into the samples array
     samples[:, 0:2] = torch.from_numpy(pixel_coords).float()
     #samples[:, 3] = time.expand(samples.size(0))
@@ -152,7 +174,7 @@ def create_SDF(
     while head < num_samples:
         sample_subset = samples[head : min(head + max_batch, num_samples), 0:2].cuda()
         samples[head : min(head + max_batch, num_samples), 2] = (
-            decode_sdf(decoder, latent_vec, rotation_vec, sample_subset)
+            decode_sdf(decoder, latent_vec, torch.from_numpy(np.array([rotation_vec])).cuda(), sample_subset)
             .squeeze(1)
             .detach()
             .cpu()

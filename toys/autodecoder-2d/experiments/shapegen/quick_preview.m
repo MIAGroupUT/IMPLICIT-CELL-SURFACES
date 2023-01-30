@@ -27,4 +27,6 @@ for i = 1:length(input_list)
     imwrite(uint8(sdf_norm <= 0) * 255, ...
             strcat(output_dir, '/', filename, '.png'));
     
+    %imwrite(uint8(stretch(sdf_norm)), ...
+    %        strcat(output_dir, '/', filename, '.png'));
 end

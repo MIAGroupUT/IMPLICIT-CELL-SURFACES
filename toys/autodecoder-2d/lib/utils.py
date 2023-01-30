@@ -348,11 +348,10 @@ def fourier_transform(x, L=5):
     return transformed_x
 
 
-def decode_sdf(decoder, latent_vector, rotation_vector, queries):
+def decode_sdf(decoder, latent_vector, rot_vec, queries):
     num_samples = queries.shape[0]
     latent_repeat = latent_vector.expand(num_samples, -1)
-    rotation_repeat = rotation_vector.expand(num_samples, -1)
-    sdf = decoder(latent_repeat, rotation_repeat, queries)
+    sdf = decoder(latent_repeat, rot_vec, queries)
     return sdf
 
 
