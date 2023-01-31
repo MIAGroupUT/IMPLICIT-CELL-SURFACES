@@ -2,6 +2,7 @@
 
 import torch
 import torch.utils.data as data_utils
+from pytorch3d.transforms import euler_angles_to_matrix # 3D rotation matrix
 import signal
 import sys
 import os
@@ -100,6 +101,13 @@ def main_function(experiment_directory):
         0.0,
         get_spec_with_default(specs, "CodeInitStdDev", 1.0) / math.sqrt(latent_size),
     )
+    
+    rot_ang = torch.nn.Embedding(1, 3).cuda()
+    torch.nn.init.normal_(
+        rot_ang.weight.data,
+        0.0,
+        0.01,
+    )
 
     loss_l1 = torch.nn.L1Loss(reduction="sum")
 
@@ -113,6 +121,10 @@ def main_function(experiment_directory):
                 "params": lat_vecs.parameters(),
                 "lr": lr_schedules[1].get_learning_rate(0),
             },
+            {
+                "params": rot_ang.parameters(),
+                "lr": lr_schedules[2].get_learning_rate(0),
+            }
         ]
     )
 
@@ -152,26 +164,22 @@ def main_function(experiment_directory):
             sdf_data = sdf_data.reshape(-1, 4)
             # number of samples * batch size
             num_sdf_samples = sdf_data.shape[0] # num_samp_per_scene * batch_size
-            sdf_data.requires_grad = False
+            sdf_data.requires_grad = False  
+            
+            # rotate coordinates 
+            xyz_rot = sdf_data[:, 0:3].cuda() @ \
+                euler_angles_to_matrix(rot_ang(torch.tensor(0).cuda()), 'XYZ').T
 
-            xyzt = torch.cat((sdf_data[:, 0:3], times.unsqueeze(-1).repeat(1, num_samp_per_frame).view(-1, 1)), dim=1)
+            #xyzt = torch.cat((sdf_data[:, 0:3], times.unsqueeze(-1).repeat(1, num_samp_per_frame).view(-1, 1)), dim=1)
+            xyzt = torch.cat((xyz_rot, times.cuda().unsqueeze(-1).repeat(1, num_samp_per_frame).view(-1, 1)), dim=1)
             sdf_gt = sdf_data[:, 3].unsqueeze(1)
 
-            if enforce_minmax:
-                sdf_gt = torch.clamp(sdf_gt, minT, maxT)
-
             batch_vecs = lat_vecs(sequence_ids.unsqueeze(-1).repeat(1, num_samp_per_frame).view(-1).cuda())
-           
-            pred_sdf = decoder(batch_vecs, xyzt.cuda())
+            
+            pred_sdf = decoder(batch_vecs, xyzt)
             
             if enforce_minmax:
                 sdf_gt = torch.clamp(sdf_gt, minT, maxT)
-                
-            batch_vecs = lat_vecs(sequence_ids.unsqueeze(-1).repeat(1, num_samp_per_frame).view(-1).cuda())
-
-            pred_sdf = decoder(batch_vecs, xyzt.cuda())
-            
-            if enforce_minmax:
                 pred_sdf = torch.clamp(pred_sdf, minT, maxT)
 
             batch_loss = loss_l1(pred_sdf, sdf_gt.cuda()) / num_sdf_samples
@@ -183,6 +191,7 @@ def main_function(experiment_directory):
                 ) / num_sdf_samples
 
                 batch_loss = batch_loss + reg_loss.cuda()
+            # TODO? Do regularization also for the rotation angles?
 
             batch_loss.backward()
 
@@ -197,7 +206,8 @@ def main_function(experiment_directory):
             optimizer_all.step()
 
         train_loss=running_loss/len(sdf_loader)
-        print("epoch {} / {}, loss {:.8f}".format(epoch, num_epochs, train_loss))        
+        print("epoch {} / {}, loss {:.8f}, ".format(epoch, num_epochs, train_loss), end='')
+        print("rotation angles:", np.array2string(rot_ang(torch.tensor(0).cuda()).detach().cpu().numpy()))   
 
         # save progress
         if epoch % log_frequency == 0 or epoch == num_epochs:
@@ -214,24 +224,29 @@ def main_function(experiment_directory):
                     learned_vectors[j,:] = latent.detach().cpu().numpy().astype(np.float32)
                     j += 1
                 i += 1
-            sio.savemat(experiment_directory + '/latent_vecs.mat', {'lat_vecs':learned_vectors})    
+            sio.savemat(experiment_directory + '/latent_vecs.mat', {'lat_vecs':learned_vectors})  
+            
+            # save rotation angles to .mat file
+            learned_rot_ang = rot_ang(torch.tensor(0).cuda()).detach().cpu().numpy().astype(np.float32)
+            sio.savemat(experiment_directory + '/rot_ang.mat', {'rot_ang':learned_rot_ang})
             
     print("Done!")
 
 if __name__ == "__main__":
 
-    import argparse
+    #import argparse
 
-    arg_parser = argparse.ArgumentParser(description="Train")
-    arg_parser.add_argument(
-        "--experiment",
-        "-e",
-        dest="experiment_directory",
-        required=True,
-        help="The experiment directory. This directory should include "
-        + "experiment specifications in 'specs.json', and logging will be "
-        + "done in this directory as well.",
-    )
+    #arg_parser = argparse.ArgumentParser(description="Train")
+    #arg_parser.add_argument(
+    #    "--experiment",
+    #    "-e",
+    #    dest="experiment_directory",
+    #    required=True,
+    #    help="The experiment directory. This directory should include "
+    #    + "experiment specifications in 'specs.json', and logging will be "
+    #    + "done in this directory as well.",
+    #)
 
-    args = arg_parser.parse_args()
-    main_function(args.experiment_directory)
+    #args = arg_parser.parse_args()
+    #main_function(args.experiment_directory)
+    main_function('experiments/celegans')

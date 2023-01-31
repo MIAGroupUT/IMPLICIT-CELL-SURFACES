@@ -1,3 +1,7 @@
 # experiment directories
 /data
-/experiments
+/experiments/*/*
+
+# do not ignore these files
+!/experiments/*/specs.json
+!/experiments/*/*.m

@@ -7,6 +7,7 @@ import skimage.measure
 import time
 import torch
 import pdb
+from pytorch3d.transforms import euler_angles_to_matrix # 3D rotation matrix
 
 from lib.utils import *
 
@@ -118,7 +119,7 @@ def convert_sdf_samples_to_mesh(
 
 
 def create_SDF(
-    decoder, latent_vec, time, N=np.array([128,128,128]), max_batch=64**3, offset=None, scale=None):
+    decoder, latent_vec, time, rot_ang, N=np.array([128,128,128]), max_batch=64**3, offset=None, scale=None):
 
     decoder.eval()
     
@@ -140,8 +141,13 @@ def create_SDF(
     # flatten all but the last dimension
     pixel_coords = pixel_coords.reshape(-1, pixel_coords.shape[-1])
     
+    # rotate cootdinates
+    pixel_coords = torch.from_numpy(pixel_coords) @ \
+        euler_angles_to_matrix(torch.from_numpy(rot_ang), 'XYZ').T
+    
     # paste grid into the samples array
-    samples[:, 0:3] = torch.from_numpy(pixel_coords).float()
+    #samples[:, 0:3] = torch.from_numpy(pixel_coords).float()
+    samples[:, 0:3] = pixel_coords
     samples[:, 3] = time.expand(samples.size(0))
     
     samples.requires_grad = False
