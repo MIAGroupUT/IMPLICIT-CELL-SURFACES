@@ -99,7 +99,7 @@ def main_function(experiment_directory):
     torch.nn.init.normal_(
         lat_vecs.weight.data,
         0.0,
-        get_spec_with_default(specs, "CodeInitStdDev", 1.0) / math.sqrt(latent_size),
+        get_spec_with_default(specs, "CodeInitStdDev", .01) / math.sqrt(latent_size),
     )
     
     rot_ang = torch.nn.Embedding(1, 3).cuda()
@@ -249,4 +249,4 @@ if __name__ == "__main__":
 
     #args = arg_parser.parse_args()
     #main_function(args.experiment_directory)
-    main_function('experiments/celegans')
+    main_function('experiments/mette')

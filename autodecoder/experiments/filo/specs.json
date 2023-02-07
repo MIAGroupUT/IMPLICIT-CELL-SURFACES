@@ -1,0 +1,50 @@
+{
+  "Description" : [ "This experiment learns an implict shape representation for cells"],
+  "DataSource" : "./data/filo",
+  "NetworkSpecs" : {
+    "dims" : [ 128, 128, 128, 320, 128, 128, 320, 128, 128, 128 ],
+    "dropout" : [],
+    "dropout_prob" : 0.2,
+    "norm_layers" : [],
+    "latent_in" : [ 4, 7 ],
+    "xyz_in_all" : true,
+    "use_tanh" : false,
+    "latent_dropout" : false,
+    "weight_norm" : false,
+    "positional_encoding" : false,
+    "fourier_degree" : 5
+    },
+  "CodeLength" : 192,
+  "NumEpochs" : 15000,
+  "LearningRateSchedule" : [
+    {
+      "Type" : "Step",
+      "Initial" : 1e-4,
+      "Interval" : 350,
+      "Factor" : 0.5
+    },
+    {
+      "Type" : "Step",
+      "Initial" : 1e-3,
+      "Interval" : 350,
+      "Factor" : 0.5
+    },
+    {
+      "Type" : "Step",
+      "Initial" : 1e-3,
+      "Interval" : 350,
+      "Factor" : 0.5
+    }],
+  "SampleFraction" : 0.06,
+  "NumSequences" : 33,
+  "ClampSDFminmax" : false,
+  "ClampingDistance" : 0.1,
+  "ScenesPerBatch" : 1,
+  "DataLoaderThreads" : 4,
+  "CodeRegularization" : true,
+  "CodeRegularizationLambda" : 1e-4,
+  "ReconstructionDims" : [ 256, 256, 256 ],
+  "ReconstructionSubsetSize" : 16777216,
+  "ReconstructionFramesPerSequence" : 30,
+  "LogFrequency" : 20
+}

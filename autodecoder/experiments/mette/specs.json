@@ -1,6 +1,6 @@
 {
   "Description" : [ "This experiment learns an implict shape representation for cells"],
-  "DataSource" : "./data/cells/samples",
+  "DataSource" : "./data/mette",
   "NetworkSpecs" : {
     "dims" : [ 128, 128, 128, 320, 128, 128, 320, 128, 128, 128 ],
     "dropout" : [],
@@ -20,30 +20,30 @@
     {
       "Type" : "Step",
       "Initial" : 1e-4,
-      "Interval" : 150,
+      "Interval" : 350,
       "Factor" : 0.5
     },
     {
       "Type" : "Step",
       "Initial" : 1e-3,
-      "Interval" : 150,
+      "Interval" : 350,
       "Factor" : 0.5
     },
     {
       "Type" : "Step",
       "Initial" : 1e-3,
-      "Interval" : 150,
+      "Interval" : 350,
       "Factor" : 0.5
     }],
-  "SampleFraction" : 0.06,
-  "NumSequences" : 2,
+  "SampleFraction" : 0.03,
+  "NumSequences" : 33,
   "ClampSDFminmax" : false,
   "ClampingDistance" : 0.1,
-  "ScenesPerBatch" : 1,
+  "ScenesPerBatch" : 2,
   "DataLoaderThreads" : 4,
   "CodeRegularization" : true,
   "CodeRegularizationLambda" : 1e-4,
-  "ReconstructionDims" : [ 256, 256, 32 ],
+  "ReconstructionDims" : [ 256, 256, 256 ],
   "ReconstructionSubsetSize" : 16777216,
   "ReconstructionFramesPerSequence" : 30,
   "LogFrequency" : 20
