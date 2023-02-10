@@ -160,6 +160,39 @@ def main_function(experiment_directory, test_type=None):
             sio.savemat(filename + '.mat', {'sdf_vid':output_sdf})
             print('Saved ' + filename + '.mat')        
         
+    # Reconstruction with rotations --------------------------------------------
+    
+    if test_type == "reconstruct_rot": 
+        rotations_rad_alpha = np.linspace(0, 2*math.pi, num=10, endpoint=False, dtype=np.float32)
+        rotations_rad_beta = np.linspace(-math.pi/2, math.pi/2, num=10, endpoint=True, dtype=np.float32)
+        rotations_rad_gamma = np.linspace(0, 2*math.pi, num=10, endpoint=False, dtype=np.float32)
+       
+        for sequence_id in range(learned_vectors.shape[0]):
+            for rot_idx in range(len(rotations_rad_alpha)):
+                output_sdf = np.zeros([num_frames_per_sequence_to_reconstruct,
+                    reconstruction_dims[0], reconstruction_dims[1],
+                    reconstruction_dims[2]],dtype='float32')
+                latent = torch.from_numpy(learned_vectors[sequence_id,:]).float().cuda()
+                print('\nlat. vec. preview:', 
+                    learned_vectors[sequence_id,:5], "...")  
+                print('rot. ang.:', 
+                    rotations_rad_alpha[rot_idx], ',', rotations_rad_beta[rot_idx], ',', rotations_rad_gamma[rot_idx], "\n")
+                for i in range(num_frames_per_sequence_to_reconstruct):
+                    filename = get_output_filename(reconstruction_dir, "rec") + \
+                        "_seq_" +  str(sequence_id).zfill(3) + "_rot_" + \
+                        str(rot_idx).zfill(3) + '_' + \
+                        f'{rotations_rad_alpha[rot_idx]:.3f}' + "_" \
+                        f'{rotations_rad_beta[rot_idx]:.3f}' + "_"\
+                        f'{rotations_rad_gamma[rot_idx]:.3f}'
+                    print("Reconstructing sequence {}, frame {}...".format(sequence_id, i))
+                    with torch.no_grad():
+                        output_sdf[i,:] = create_SDF(decoder, latent, time[i], 
+                                                     np.array([rotations_rad_alpha[rot_idx], rotations_rad_beta[rot_idx], rotations_rad_gamma[rot_idx]]),
+                                                     N=reconstruction_dims)         
+                # save 3D+t SDF to matlab file
+                sio.savemat(filename + '.mat', {'sdf_vid':output_sdf})
+                print('Saved ' + filename + '.mat')    
+    
     # generate (new shapes) ---------------------------------------------------
     
     elif test_type == "generate":   
@@ -239,7 +272,7 @@ if __name__ == "__main__":
         "-t",
         dest="test_type",
         required=True,
-        help="Type of the test. Valid values: [reconstruct, generate]",
+        help="Type of the test. Valid values: [reconstruct, reconstruct_rot, generate]",
     )
     
     # add cmd parameter for test_type
