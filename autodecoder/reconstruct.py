@@ -12,6 +12,7 @@ import lib
 from lib.workspace import *
 #from lib.models.decoder_relu import *
 from lib.models.decoder_siren import *
+from lib.models.equicoder import EquiCoder, DecoderInner
 from lib.utils import *
 from lib.mesh import *
 
@@ -61,7 +62,9 @@ def main_function(experiment_directory):
     
     
     # load decoder
-    decoder = DeepSDF(latent_size, **specs["NetworkSpecs"])
+    # decoder = DeepSDF(latent_size, **specs["NetworkSpecs"]).cuda()
+    # decoder = EquiCoder(latent_size).cuda()
+    decoder = DecoderInner(z_dim=latent_size, c_dim=0, hidden_size=138).cuda()
     #print("training with {} GPU(s)".format(torch.cuda.device_count()))
     decoder = torch.nn.DataParallel(decoder)  
     
@@ -88,7 +91,7 @@ def main_function(experiment_directory):
         latent_codes_dir, "latest.pth"
     )
     latent = torch.load(latent_filename)["latent_codes"]["weight"]
-  
+
     print(
         "Number of decoder parameters: {}".format(
             sum(p.data.nelement() for p in decoder.parameters())
@@ -145,7 +148,7 @@ def main_function(experiment_directory):
 
         # save 3D+t SDF to vtk files (for the matlab-weary)
         for time_id, sdf_at_t in enumerate(output_sdf):
-            verts, faces, normals, values = marching_cubes(sdf_at_t, level=0)
+            verts, faces, normals, values = marching_cubes(sdf_at_t, level=0, spacing=[2. / n for n in sdf_at_t.shape])  # [-1, 1]
             meshio.Mesh(
                 verts,
                 {'triangle': faces},

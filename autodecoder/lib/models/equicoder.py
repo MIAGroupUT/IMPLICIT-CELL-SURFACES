@@ -62,11 +62,11 @@ class EquiCoder(escnn.nn.EquivariantModule):
 
         return shape
 
-    def forward(self, latent_code, spatiotemporal_coordinates):
-        latent_code = GeometricTensor(latent_code, self.in_type.index_select((0, 1)))
-        spatiotemporal_coordinates = GeometricTensor(spatiotemporal_coordinates, self.in_type.index_select((2, 3)))
+    def forward(self, latent_code, xyzt):
+        latent_code = GeometricTensor(latent_code, FieldType(self.in_type.gspace, self.in_type.representations[:-2]))
+        xyzt = GeometricTensor(xyzt, FieldType(self.in_type.gspace, self.in_type.representations[-2:]))
 
-        return self.layers(tensor_directsum((latent_code, spatiotemporal_coordinates))).tensor
+        return self.layers(tensor_directsum((latent_code, xyzt))).tensor
 
 
 # import os
@@ -111,8 +111,8 @@ class EquiCoder(escnn.nn.EquivariantModule):
 #             num_layers=num_layers
 #         ).to(torch.device('cuda'))
 # 
-#     def forward(self, latent_code, spatiotemporal_coordinates):
-#         return self.mlp(torch.cat((latent_code, spatiotemporal_coordinates), dim=-1))
+#     def forward(self, latent_code, xyzt):
+#         return self.mlp(torch.cat((latent_code, xyzt), dim=-1))
 
 
 # Copied and adapted from "neural implicit reconstruction with vector neurons" (https://github.com/FlyingGiraffe/vnn-neural-implicits)
@@ -167,15 +167,15 @@ class ResnetBlockFC(nn.Module):
         nn.init.zeros_(self.fc_1.weight)
 
     def forward(self, x):
-        net = self.fc_0(self.actvn(x))
-        dx = self.fc_1(self.actvn(net))
+        net = self.actvn(self.fc_0(x))  # [CHANGED] layer order
+        dx = self.fc_1(net)  # [CHANGED] layer order
 
         if self.shortcut is not None:
             x_s = self.shortcut(x)
         else:
             x_s = x
 
-        return x_s + dx
+        return self.actvn(x_s + dx)  # [CHANGED] layer order
 
 
 class DecoderInner(nn.Module):
@@ -238,7 +238,7 @@ class DecoderInner(nn.Module):
             c_inv = (c * c_dir).sum(-1).unsqueeze(1).repeat(1, T, 1)
             net = torch.cat([net, net_c, c_inv], dim=2)
 
-        net = self.fc_in(torch.cat((net, t), dim=-1))  # [CHANGED] include temporal coordinate
+        net = self.actvn(self.fc_in(torch.cat((net, t), dim=-1)))  # [CHANGED] include temporal coordinate | layer order
 
         net = self.block0(net)
         net = self.block1(net)
@@ -246,7 +246,7 @@ class DecoderInner(nn.Module):
         net = self.block3(net)
         net = self.block4(net)
 
-        out = self.fc_out(self.actvn(net))
+        out = self.fc_out(net)  # [CHANGED] layer order
         out = out.squeeze(-1)
 
         return out

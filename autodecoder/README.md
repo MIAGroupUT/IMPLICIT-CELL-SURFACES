@@ -2,6 +2,11 @@ We additionally need [E(n)-equivariant steerable CNNs (escnn)](https://github.co
 ```
 pip install escnn
 ```
+and [meshio](https://github.com/nschloe/meshio)
+```
+pip install meshio[all]
+```
+to avoid Matlab.
 
 I have tried [equivariant MLP (emlp)](https://github.com/mfinzi/equivariant-MLP) which is built on [JAX](https://github.com/google/jax) (but has a PyTorch version):
 ```

@@ -11,6 +11,7 @@ import pdb
 import lib
 from lib.workspace import *
 #from lib.models.decoder_relu import *
+from lib.models.decoder_siren import *
 from lib.models.equicoder import EquiCoder, DecoderInner
 from lib.utils import *
 from lib.mesh import *
@@ -58,8 +59,9 @@ def main_function(experiment_directory):
     code_reg_lambda = get_spec_with_default(specs, "CodeRegularizationLambda", 1e-4)
 
     code_bound = get_spec_with_default(specs, "CodeBound", None)
-    # decoder = EquiCoder(latent_size).cuda()
-    decoder = DecoderInner(z_dim=latent_size, c_dim=0).cuda()
+    # decoder = DeepSDF(latent_size, **specs["NetworkSpecs"]).cuda()
+    # decoder = EquiCoder(latent_size, num_layers=4, num_latent_channels=64).cuda()
+    decoder = DecoderInner(z_dim=latent_size, c_dim=0, hidden_size=138).cuda()
 
     print("training with {} GPU(s)".format(torch.cuda.device_count()))
     decoder = torch.nn.DataParallel(decoder)
@@ -198,7 +200,7 @@ def main_function(experiment_directory):
             optimizer_all.step()
 
         train_loss=running_loss/len(sdf_loader)
-        print("epoch {} / {}, loss {:.8f}".format(epoch, num_epochs, train_loss))        
+        print("epoch {} / {}, loss {:.8f}".format(epoch, num_epochs, train_loss), flush=True)
 
         # save progress
         if epoch % log_frequency == 0 or epoch == num_epochs:
