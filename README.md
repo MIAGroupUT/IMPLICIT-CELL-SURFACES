@@ -16,13 +16,15 @@
 ## Implementation of the Method
 
 ### Requirements and Dependencies
-The implementation was tested on AMD EPYC 7713 64-Core Processor, 512 GB RAM, NVIDIA A100 80 GB GPU, and Ubuntu 20.04 with the following versions of software:
+The implementation was tested on AMD EPYC 7713 64-Core Processor, 512 GB RAM, NVIDIA A100 80 GB GPU, and Ubuntu 20.04 LTS with the following versions of software:
 
 * <b>NEURAL NETWORK (``/autodecoder``)</b>
-    - Python 3.8.5
-    - PyTorch 1.9.1
-    - NumPy 1.20.3
-    - SciPy 1.7.1
+    - Python 3.10.10
+    - NumPy 1.24.3
+    - SciPy 1.10.1
+    - PyTorch 2.0.0
+    - PyTorch3D 0.7.3
+    
 * <b>DATA PROCESSING AND VISUALIZATION (``/matlab``)</b>
     - Matlab R2021a
     - DIPimage 2.9 (optional)
