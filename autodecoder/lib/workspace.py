@@ -3,14 +3,13 @@
 import json
 import os
 import torch
-import pdb
 
 model_params_subdir = "model_parameters"
 optimizer_params_subdir = "optimizer_parameters"
 latent_codes_subdir = "latent_codes"
 logs_filename = "logs.pth"
-reconstructions_subdir = "reconstructions"
-interpolations_subdir = "interpolations"
+reconstructions_subdir = "OUT_reconstructions"
+generations_subdir = "OUT_generations"
 optimizations_subdir = "optimizations"
 optimizations_meshes_subdir = "meshes"
 optimizations_codes_subdir = "codes"
@@ -82,8 +81,6 @@ def load_model_parameters(experiment_directory, checkpoint, encoder, decoder):
     decoder.load_state_dict(data["model_state_dict"])
 
     return data["epoch"]
-
-
 
 
 def build_decoder(experiment_directory, experiment_specs):
@@ -215,9 +212,9 @@ def get_reconstruction_dir(experiment_dir, create_if_nonexistent=False):
 
     return dir
 
-def get_interpolation_dir(experiment_dir, create_if_nonexistent=False):
+def get_generation_dir(experiment_dir, create_if_nonexistent=False):
 
-    dir = os.path.join(experiment_dir, interpolations_subdir)
+    dir = os.path.join(experiment_dir, generations_subdir)
 
     if create_if_nonexistent and not os.path.isdir(dir):
         os.makedirs(dir)

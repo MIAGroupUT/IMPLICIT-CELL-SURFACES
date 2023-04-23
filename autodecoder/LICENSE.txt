@@ -1,6 +1,5 @@
-Copyright (c) 2022 David Wiesner, Centre for Biomedical Image Analysis,
-Masaryk University, Julian Suk, Department of Applied Mathematics & Technical
-Medical Centre, University of Twente
+Copyright (c) 2023 David Wiesner, Centre for Biomedical Image Analysis,
+Masaryk University
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
