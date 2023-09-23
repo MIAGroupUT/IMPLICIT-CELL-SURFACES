@@ -39,13 +39,14 @@ def main_function(experiment_directory, test_type=None, test_epoch=None):
 
     # load decoder
     decoder = DeepSDF(latent_size, **specs["NetworkSpecs"])
-    decoder = torch.nn.DataParallel(decoder)  
-    saved_model_state = torch.load(
-        os.path.join(
-            experiment_directory, model_params_subdir, 'e' + \
-                test_epoch.zfill(4) + '.pth'
-        )
-    )
+    decoder = torch.nn.DataParallel(decoder) 
+    if test_epoch is None:
+        saved_model_state = torch.load(
+            os.path.join(experiment_directory, model_params_subdir, 'model.pth'))
+    else: 
+        saved_model_state = torch.load(
+            os.path.join(experiment_directory, model_params_subdir, 'e' + \
+                test_epoch.zfill(4) + '_model.pth'))
     saved_model_epoch = saved_model_state["epoch"]
     decoder.load_state_dict(saved_model_state["model_state_dict"])
     decoder = decoder.module.cuda()
@@ -188,6 +189,36 @@ def main_function(experiment_directory, test_type=None, test_epoch=None):
             experiment_directory, True), "gen")
         
         infer_sdf(new_vectors, new_rot_ang, t, fprefix)
+    
+    
+    # Generate (A549 filopodial shapes) #######################################
+    
+    elif test_type == "generate_filo":   
+        
+        # load latent vectors
+        if test_epoch is None:
+            learned_vectors = np.squeeze(np.asarray([sio.loadmat(experiment_directory 
+                + '/' + latent_codes_subdir + '/' + \
+                    'lat_vecs.mat')['lat_vecs']], dtype=np.float32)) 
+        else:
+            learned_vectors = np.squeeze(np.asarray([sio.loadmat(experiment_directory 
+                + '/' + latent_codes_subdir + '/e' + test_epoch.zfill(4) + \
+                    '_lat_vecs.mat')['lat_vecs']], dtype=np.float32))
+        
+        # add noise to latent vectors
+        random_noise = np.random.normal(0.0, 0.0001, size=(num_sequences,
+                                        latent_size)).astype(np.float32)
+        np.random.shuffle(learned_vectors)
+        new_vectors = learned_vectors + random_noise
+        
+        # randomly generate new rotation angles
+        new_rot_ang = np.random.uniform(low=-pi, high=pi, 
+            size=(num_sequences, 3)).astype(np.float32)
+        
+        fprefix = get_output_filename(get_generation_dir(
+            experiment_directory, True), "gen")
+        
+        infer_sdf(new_vectors, new_rot_ang, t, fprefix)
                 
             
     ###########################################################################
@@ -213,7 +244,7 @@ if __name__ == "__main__":
         "-t",
         dest="test_type",
         required=True,
-        help="Type of the test. Valid values: [reconstruct, generate]",
+        help="Type of the test. Valid values: [reconstruct, generate, generate_filo]",
     )
     arg_parser.add_argument(
         "--epoch",
@@ -226,5 +257,5 @@ if __name__ == "__main__":
     
     args = arg_parser.parse_args()
     #main_function(args.experiment_directory, args.test_type, args.test_epoch)
-    main_function('./experiments/test', 'reconstruct', '520')
+    main_function('./experiments/filo', 'generate_filo')
     

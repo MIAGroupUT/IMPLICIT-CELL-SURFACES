@@ -272,7 +272,7 @@ def main_function(experiment_directory):
             
             # decoder
             save_model(experiment_directory, 'e' + str(epoch).zfill(4) + \
-                       '.pth', decoder, epoch)            
+                       '_model.pth', decoder, epoch)            
             
             # latent vectors 
             latent_codes_dir = get_latent_codes_dir(experiment_directory, True)
