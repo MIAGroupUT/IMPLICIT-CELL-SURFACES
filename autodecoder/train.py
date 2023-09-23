@@ -300,17 +300,16 @@ if __name__ == "__main__":
     import argparse
 
     arg_parser = argparse.ArgumentParser(description="Train")
-    # arg_parser.add_argument(
-    #     "--experiment",
-    #     "-x",
-    #     dest="experiment_directory",
-    #     required=True,
-    #     help="The experiment directory. This directory should include "
-    #     + "experiment specifications in 'specs.json', and logging will be "
-    #     + "done in this directory as well.",
-    # )
+    arg_parser.add_argument(
+        "--experiment",
+        "-x",
+        dest="experiment_directory",
+        required=True,
+        help="The experiment directory. This directory should include "
+        + "experiment specifications in 'specs.json', and logging will be "
+        + "done in this directory as well.",
+    )
 
     args = arg_parser.parse_args()
-    #main_function(args.experiment_directory)
-    main_function('./experiments/test')
+    main_function(args.experiment_directory)
     

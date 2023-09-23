@@ -230,7 +230,7 @@ if __name__ == "__main__":
     import argparse
     
     arg_parser = argparse.ArgumentParser(description="Test")
-    '''arg_parser.add_argument(
+    arg_parser.add_argument(
         "--experiment",
         "-x",
         dest="experiment_directory",
@@ -253,9 +253,7 @@ if __name__ == "__main__":
         required=False,
         help="Index of the epoch.",
     )
-    '''
     
     args = arg_parser.parse_args()
-    #main_function(args.experiment_directory, args.test_type, args.test_epoch)
-    main_function('./experiments/filo', 'generate_filo')
+    main_function(args.experiment_directory, args.test_type, args.test_epoch)
     
