@@ -111,7 +111,7 @@ If you find our work useful in your research, please cite:
     <!--Wiesner D, Nečasová T, Svoboda D. <b>On Generative Modeling of Cell Shape Using 3D GANs</b>. In Ricci Elisa, Rota Buló Samuel, Snoek Cees, Lanz Oswald, Messelodi Stefano, Sebe Nicu. Image Analysis and Processing – ICIAP 2019. LNCS 11752., Trento: Springer, 2019. p. 672-682, 11 pp., ISBN 978-3-030-30645-8. doi:<a href="https://dx.doi.org/10.1007/978-3-030-30645-8_61" target="_blank">10.1007/978-3-030-30645-8_61</a>.-->
     </div>
     BibTeX:
-    <div style="width: 90%; margin: auto; border-style: solid; border-color: lightgray;"><code style="font-size: 14px;">
+    ```
     @InProceedings{wiesner2022miccai,<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;title={Implicit Neural Representations for Generative Modeling of Living Cell Shapes},<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;author={Wiesner, David and Suk, Julian and Dummer, Sven and Svoboda, David and Wolterink, Jelmer M.},<br/>
@@ -124,25 +124,27 @@ If you find our work useful in your research, please cite:
     &nbsp;&nbsp;&nbsp;&nbsp;isbn={978-3-031-16440-8},<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;doi={10.1007/978-3-031-16440-8_6}<br/>
     }
-    </code></div>
+    ```
 
 * <b>Journal paper (preprint)</b>
     <div style="width: 90%; margin: auto;">
     Wiesner D, Suk J, Dummer S, Nečasová T, Ulman V, Svoboda D and Wolterink J.M. <b>Generative modeling of living cells with SO(3)-equivariant implicit neural representations</b>. arXiv preprint arXiv:2304.08960, 2023.
     </div>
     BibTeX:
-    <div style="width: 90%; margin: auto; border-style: solid; border-color: lightgray;"><code style="font-size: 14px;">
+    ```
     @article{wiesner2023media,<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;title={Generative modeling of living cells with {SO}(3)-equivariant implicit neural representations},<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;author={Wiesner, David and Suk, Julian and Dummer, Sven and Ne{\v{c}}asov{\'a}, Tereza and Ulman, Vladim{\'\i}r and Svoboda, David and Wolterink, Jelmer M.},<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;journal={arXiv preprint arXiv:2304.08960},<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;year={2023}<br/>
     }
-    </code></div>
+    ```
 
 
 
-
+<div style="width: 90%; margin: auto;">
+Wiesner D, Suk J, Dummer S, Svoboda D a Wolterink J. <b>Implicit Neural Representations for Generative Modeling of Living Cell Shapes</b>. In Linwei Wang, Qi Dou, P. Thomas Fletcher, Stefanie Speidel, Shuo Li. International Conference on Medical Image Computing and Computer Assisted Intervention. Switzerland: Springer Nature Switzerland, 2022. p. 58-67., ISBN 978-3-031-16440-8. doi:<a href="https://dx.doi.org/10.1007/978-3-031-16440-8_6" target="_blank">10.1007/978-3-031-16440-8_6</a>. 
+</div>
 
 
 
