@@ -17,10 +17,10 @@ This is the official GitHub repository of the MICCAI 2022 paper "Implicit Neural
 
 <div style="text-align: center;">
 <a href="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/plat_new.gif" target="_blank">
-    <img src="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/plat_new.gif" style="margin-right: 40px;" width=30%>
+    <img src="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/plat_new.gif" style="margin-right: 80px;" width=30%>
 </a>
 <a href="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/cel_new.gif" target="_blank">
-    <img src="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/cel_new.gif" style="margin-right: 40px;" width=30%>
+    <img src="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/cel_new.gif" style="margin-right: 80px;" width=30%>
 </a>
 <a href="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/filo_new.gif" target="_blank">
     <img src="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/filo_new.gif" width=30%>
