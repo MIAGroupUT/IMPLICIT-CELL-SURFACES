@@ -112,7 +112,7 @@ If you find our work useful in your research, please cite:
     </div>
     
     <br/>
-    * <b>BibTeX</b>:
+    <b>BibTeX</b>:
     
 ```
 @InProceedings{wiesner2022miccai,
@@ -135,12 +135,13 @@ If you find our work useful in your research, please cite:
     </div>
     
     <br/>
-    * <b>BibTeX</b>:
+    <b>BibTeX</b>:
     
 ```
 @article{wiesner2023media,
     title={Generative modeling of living cells with {SO}(3)-equivariant implicit neural representations},
-    author={Wiesner, David and Suk, Julian and Dummer, Sven and Ne{\v{c}}asov{\'a}, Tereza and Ulman, Vladim{\'\i}r and Svoboda, David and Wolterink, Jelmer M.},
+    author={Wiesner, David and Suk, Julian and Dummer, Sven and Ne{\v{c}}asov{\'a}, Tereza
+            and Ulman, Vladim{\'\i}r and Svoboda, David and Wolterink, Jelmer M.},
     journal={arXiv preprint arXiv:2304.08960},
     year={2023}
 }
