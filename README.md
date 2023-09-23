@@ -45,7 +45,7 @@ The following guide is applicable for Linux-based systems. The versions of the l
 The implementation was tested on AMD EPYC 7713 64-Core Processor, 512 GB RAM, NVIDIA A100 80 GB GPU,
 and Ubuntu 20.04 LTS with the following versions of software:
 
-* <b>NEURAL NETWORK ``/autodecoder``)</b>
+* <b>NEURAL NETWORK (``/autodecoder``)</b>
     - Python 3.9.16
     - PyTorch 2.0.1
     - PyTorch3D 0.7.4
