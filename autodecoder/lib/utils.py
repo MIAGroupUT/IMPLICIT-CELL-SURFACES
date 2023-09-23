@@ -5,6 +5,7 @@ import torch
 import lib.workspace as ws
 import numpy as np
 import scipy.io as sio # matlab loading
+import h5py # HDF5 loading
 from tqdm import tqdm # progress bar
 
 
@@ -221,9 +222,12 @@ def decode_sdf(decoder, latent_vector, queries):
     return sdf
 
 
-def get_instance_filenames(data_source):
-    # find all matlab files
-    file_list = [file for file in os.listdir(data_source) if file.endswith('.mat')]
+def get_instance_filenames(data_source, use_hdf5):
+    # find all data files
+    if use_hdf5:
+        file_list = [file for file in os.listdir(data_source) if file.endswith('.h5')]
+    else:
+        file_list = [file for file in os.listdir(data_source) if file.endswith('.mat')]
     file_list.sort()
     return file_list
 

@@ -50,6 +50,7 @@ class DeepSDF(nn.Module):
         weight_norm=False,
         xyz_in_all=None,
         use_tanh = False,
+        use_sine = True,
         latent_dropout=False,
         positional_encoding = False,
         fourier_degree = 1
@@ -97,14 +98,21 @@ class DeepSDF(nn.Module):
         self.use_tanh = use_tanh
         if use_tanh:
             self.tanh = nn.Tanh()
-        self.sine = SirenActivation()
+            
+        self.use_sine = use_sine
+        if use_sine:
+            self.sine = SirenActivation()
+        else:
+            self.relu = nn.ReLU()
 
         self.dropout_prob = dropout_prob
         self.dropout = dropout
+        #self.th = nn.Tanh()
 
-        # initialise for the SIREN activation functions
-        self.apply(self.sine.sine_init)
-        getattr(self, "lin0").apply(self.sine.first_layer_sine_init)
+        if use_sine:
+            # initialise for the SIREN activation functions
+            self.apply(self.sine.sine_init)
+            getattr(self, "lin0").apply(self.sine.first_layer_sine_init)
 
 
     def forward(self, latent, xyzt):
@@ -138,7 +146,10 @@ class DeepSDF(nn.Module):
                 ):
                     bn = getattr(self, "bn" + str(layer))
                     x = bn(x)
-                x = self.sine(x)
+                if self.use_sine:
+                    x = self.sine(x)
+                else:
+                    x = self.relu(x)
                 if self.dropout is not None and layer in self.dropout:
                     x = F.dropout(x, p=self.dropout_prob, training=self.training)
 
