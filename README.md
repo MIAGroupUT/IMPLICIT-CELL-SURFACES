@@ -15,17 +15,17 @@
 This is the official GitHub repository of the MICCAI 2022 paper "Implicit Neural Representations for Generative Modeling of Living Cell Shapes". For more information and results, please visit our official website at <a href="https://cbia.fi.muni.cz/research/simulations/implicit_shapes" target="_blank">https://cbia.fi.muni.cz/research/simulations/implicit_shapes</a>.
 
 
-<div style="text-align: center;">
+<p align="center">
 <a href="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/plat_new.gif" target="_blank">
-    <img src="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/plat_new.gif" style="margin-right: 40px;" width=30% class="center">
+    <img src="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/plat_new.gif" style="margin-right: 40px;" width=30%>
 </a>
 <a href="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/cel_new.gif" target="_blank">
-    <img src="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/cel_new.gif" style="margin-right: 40px;" width=30% class="center">
+    <img src="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/cel_new.gif" style="margin-right: 40px;" width=30%>
 </a>
 <a href="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/filo_new.gif" target="_blank">
-    <img src="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/filo_new.gif" width=30% class="center">
+    <img src="https://cbia.fi.muni.cz/images/research/simulations-and-modeling/implicit_shapes/filo_new.gif" width=30%>
 </a>
-</div>
+</p>
 
 
 
