@@ -149,10 +149,6 @@ If you find our work useful in your research, please cite:
 
 
 
-<div style="width: 90%; margin: auto;">
-Wiesner D, Suk J, Dummer S, Svoboda D a Wolterink J. <b>Implicit Neural Representations for Generative Modeling of Living Cell Shapes</b>. In Linwei Wang, Qi Dou, P. Thomas Fletcher, Stefanie Speidel, Shuo Li. International Conference on Medical Image Computing and Computer Assisted Intervention. Switzerland: Springer Nature Switzerland, 2022. p. 58-67., ISBN 978-3-031-16440-8. doi:<a href="https://dx.doi.org/10.1007/978-3-031-16440-8_6" target="_blank">10.1007/978-3-031-16440-8_6</a>. 
-</div>
-
 
 
 ## Acknowledgements
