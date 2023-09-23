@@ -7,9 +7,9 @@
 
 
 ## Repository structure
+* ``/archive`` - Archived source codes.
 * ``/autodecoder`` - Autodecoder MLP for implicit representation of cell shapes.
 * ``/matlab`` - Matlab scripts for data preparation and visualization.
-* ``/baseline`` - Baseline models.
 
 
 
