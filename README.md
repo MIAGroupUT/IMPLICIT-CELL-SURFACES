@@ -119,7 +119,7 @@ If you find our work useful in your research, please cite:
     <b>BibTeX</b>:
     
 ```
-@article{wiesner2023media,
+@article{wiesner2024media,
     title={Generative modeling of living cells with {SO}(3)-equivariant implicit neural representations},
     author={Wiesner, David and Suk, Julian and Dummer, Sven and Ne{\v{c}}asov{\'a}, Tereza
             and Ulman, Vladim{\'\i}r and Svoboda, David and Wolterink, Jelmer M.},
