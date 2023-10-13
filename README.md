@@ -2,7 +2,7 @@
 
 <a href="mailto:wiesner@fi.muni.cz">David&nbsp;Wiesner</a>, <a href="mailto:j.m.suk@utwente.nl">Julian&nbsp;Suk</a>, <a href="mailto:s.c.dummer@utwente.nl">Sven&nbsp;Dummer</a>, <a href="mailto:xnecasovat@fi.muni.cz">Tereza&nbsp;Nečasová</a>, <a href="mailto:vladimir.ulman@vsb.cz">Vladimír&nbsp;Ulman</a>, <a href="mailto:svoboda@fi.muni.cz">David&nbsp;Svoboda</a>, and&nbsp;<a href="mailto:j.m.wolterink@utwente.nl">Jelmer&nbsp;M.&nbsp;Wolterink</a>
 
-<b><a href="https://arxiv.org/abs/2304.08960" target="_blank">Journal paper (arXiv)</a>&nbsp;&nbsp;|&nbsp;&nbsp;Conference paper (<a href="https://dx.doi.org/10.1007/978-3-031-16440-8_6" target="_blank">Springer</a>/<a href="https://arxiv.org/abs/2207.06283" target="_blank">arXiv</a>)&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://cbia.fi.muni.cz/files/simulations/implicit_shapes/MICCAI_2022_Oral_5_Implicit_Cell_Shapes.pdf" target="_blank">Slides</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://cbia.fi.muni.cz/files/simulations/implicit_shapes/MICCAI_2022_Poster_Implicit_Cell_Shapes.pdf" target="_blank">Poster</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://cbia.fi.muni.cz/research/simulations/implicit_shapes.html" target="_blank">Official website</a></b>
+<b><a href="https://www.sciencedirect.com/science/article/pii/S1361841523002517" target="_blank">Journal paper</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://dx.doi.org/10.1007/978-3-031-16440-8_6" target="_blank">Conference paper</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="/files/simulations/implicit_shapes/MICCAI_2022_Oral_5_Implicit_Cell_Shapes.pdf" target="_blank">Conference slides</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="/files/simulations/implicit_shapes/MICCAI_2022_Poster_Implicit_Cell_Shapes.pdf" target="_blank">Conference poster</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://cbia.fi.muni.cz/research/simulations/implicit_shapes.html" target="_blank">Official website</a></b>
 
 
 
@@ -110,10 +110,32 @@ Please note that the training parameters in the provided <code style="color: bla
 
 If you find our work useful in your research, please cite:
 
+* <b>Journal paper (preprint)</b>
+    <div style="width: 90%; margin: auto;">
+    Wiesner D, Suk J, Dummer S, Nečasová T, Ulman V, Svoboda D and Wolterink J.M. <b>Generative modeling of living cells with SO(3)-equivariant implicit neural representations</b>. Medical Image Analysis. 2024, vol. 91, p. 102991. ISSN 1361-8415. doi:<a href="https://dx.doi.org/10.1016/j.media.2023.102991" target="_blank">10.1016/j.media.2023.102991</a>.
+    </div>
+    
+    <br/>
+    <b>BibTeX</b>:
+    
+```
+@article{wiesner2023media,
+    title={Generative modeling of living cells with {SO}(3)-equivariant implicit neural representations},
+    author={Wiesner, David and Suk, Julian and Dummer, Sven and Ne{\v{c}}asov{\'a}, Tereza
+            and Ulman, Vladim{\'\i}r and Svoboda, David and Wolterink, Jelmer M.},
+    journal={Medical Image Analysis},
+    volume = {91},
+    pages = {102991},
+    year = {2024},
+    issn = {1361-8415},
+    doi = {https://doi.org/10.1016/j.media.2023.102991},
+    url = {https://www.sciencedirect.com/science/article/pii/S1361841523002517}
+}
+```
+
 * <b>Conference paper</b>
     <div style="width: 90%; margin: auto;">
     Wiesner D, Suk J, Dummer S, Svoboda D and Wolterink J.M. <b>Implicit Neural Representations for Generative Modeling of Living Cell Shapes</b>. In Linwei Wang, Qi Dou, P. Thomas Fletcher, Stefanie Speidel, Shuo Li. International Conference on Medical Image Computing and Computer Assisted Intervention. Switzerland: Springer Nature Switzerland, 2022. p. 58-67., ISBN 978-3-031-16440-8. doi:<a href="https://dx.doi.org/10.1007/978-3-031-16440-8_6" target="_blank">10.1007/978-3-031-16440-8_6</a>. 
-    <!--Wiesner D, Nečasová T, Svoboda D. <b>On Generative Modeling of Cell Shape Using 3D GANs</b>. In Ricci Elisa, Rota Buló Samuel, Snoek Cees, Lanz Oswald, Messelodi Stefano, Sebe Nicu. Image Analysis and Processing – ICIAP 2019. LNCS 11752., Trento: Springer, 2019. p. 672-682, 11 pp., ISBN 978-3-030-30645-8. doi:<a href="https://dx.doi.org/10.1007/978-3-030-30645-8_61" target="_blank">10.1007/978-3-030-30645-8_61</a>.-->
     </div>
     
     <br/>
@@ -134,23 +156,7 @@ If you find our work useful in your research, please cite:
 }
 ```
 
-* <b>Journal paper (preprint)</b>
-    <div style="width: 90%; margin: auto;">
-    Wiesner D, Suk J, Dummer S, Nečasová T, Ulman V, Svoboda D and Wolterink J.M. <b>Generative modeling of living cells with SO(3)-equivariant implicit neural representations</b>. arXiv preprint arXiv:2304.08960, 2023.
-    </div>
-    
-    <br/>
-    <b>BibTeX</b>:
-    
-```
-@article{wiesner2023media,
-    title={Generative modeling of living cells with {SO}(3)-equivariant implicit neural representations},
-    author={Wiesner, David and Suk, Julian and Dummer, Sven and Ne{\v{c}}asov{\'a}, Tereza
-            and Ulman, Vladim{\'\i}r and Svoboda, David and Wolterink, Jelmer M.},
-    journal={arXiv preprint arXiv:2304.08960},
-    year={2023}
-}
-```
+
 
 
 
@@ -158,7 +164,7 @@ If you find our work useful in your research, please cite:
 
 ## Acknowledgements
 
-This work was partially funded by the 4TU Precision Medicine programme supported by High Tech for a Sustainable Future, a framework commissioned by the four Universities of Technology of the Netherlands. Jelmer M. Wolterink was supported by the NWO domain Applied and Engineering Sciences VENI grant (18192). David Svoboda was supported by the MEYS CR (Project LM2023050). Vladimír Ulman was supported by the MEYS CR through the e-INFRA CZ (ID:90140).
+This work was partially funded by the 4TU Precision Medicine programme supported by High Tech for a Sustainable Future, a framework commissioned by the four Universities of Technology of the Netherlands. Jelmer M. Wolterink was supported by the NWO domain Applied and Engineering Sciences VENI grant (18192). We acknowledge the support by the Ministry of Education, Youth and Sports of the Czech Republic (MEYS CR) (Czech-BioImaging Projects LM2023050 and CZ.02.1.01/0.0/0.0/18_046/0016045). This project has received funding from the European High-Performance Computing Joint Undertaking (JU) and from BMBF/DLR under grant agreement No 955811. The JU receives support from the European Union’s Horizon 2020 research and innovation programme and France, the Czech Republic, Germany, Ireland, Sweden and the United Kingdom.
 
 The data set of <i>Platynereis dumerilii</i> embryo cells is courtesy of <a href="https://linkedin.com/in/mette-handberg-thorsager" target="_blank">Mette Handberg-Thorsager</a> and <a href="https://scholar.google.com/citations?user=pexj_eQAAAAJ" target="_blank">Manan Lalit</a>, who both have kindly shared it with us.
 
