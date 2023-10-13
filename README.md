@@ -110,7 +110,7 @@ Please note that the training parameters in the provided <code style="color: bla
 
 If you find our work useful in your research, please cite:
 
-* <b>Journal paper (preprint)</b>
+* <b>Journal paper</b>
     <div style="width: 90%; margin: auto;">
     Wiesner D, Suk J, Dummer S, Nečasová T, Ulman V, Svoboda D and Wolterink J.M. <b>Generative modeling of living cells with SO(3)-equivariant implicit neural representations</b>. Medical Image Analysis. 2024, vol. 91, p. 102991. ISSN 1361-8415. doi:<a href="https://dx.doi.org/10.1016/j.media.2023.102991" target="_blank">10.1016/j.media.2023.102991</a>.
     </div>
@@ -124,12 +124,12 @@ If you find our work useful in your research, please cite:
     author={Wiesner, David and Suk, Julian and Dummer, Sven and Ne{\v{c}}asov{\'a}, Tereza
             and Ulman, Vladim{\'\i}r and Svoboda, David and Wolterink, Jelmer M.},
     journal={Medical Image Analysis},
-    volume = {91},
-    pages = {102991},
-    year = {2024},
-    issn = {1361-8415},
-    doi = {https://doi.org/10.1016/j.media.2023.102991},
-    url = {https://www.sciencedirect.com/science/article/pii/S1361841523002517}
+    volume={91},
+    pages={102991},
+    year={2024},
+    issn={1361-8415},
+    doi={https://doi.org/10.1016/j.media.2023.102991},
+    url={https://www.sciencedirect.com/science/article/pii/S1361841523002517}
 }
 ```
 
