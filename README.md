@@ -29,7 +29,7 @@
 * ``/matlab`` - Matlab scripts for data preparation and visualization.
 
 
-This is the official GitHub repository of the MICCAI 2022 paper "Implicit Neural Representations for Generative Modeling of Living Cell Shapes". For more information and results, please visit our official website at <a href="https://cbia.fi.muni.cz/research/simulations/implicit_shapes" target="_blank">https://cbia.fi.muni.cz/research/simulations/implicit_shapes</a>.
+This is the official GitHub repository of MedIA 2024 paper "Generative modeling of living cells with SO(3)-equivariant implicit neural representations" and MICCAI 2022 paper "Implicit Neural Representations for Generative Modeling of Living Cell Shapes". For more information and results, please visit our official website at <a href="https://cbia.fi.muni.cz/research/simulations/implicit_shapes" target="_blank">https://cbia.fi.muni.cz/research/simulations/implicit_shapes</a>.
 
 
 
