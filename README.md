@@ -82,7 +82,7 @@ and Ubuntu 20.04 LTS with the following versions of software:
 
 To follow this guide, please download and extract the [Source code, pre-trained models, and examples](https://cbia.fi.muni.cz/files/simulations/implicit_shapes/impl_sdf_source_models_examples.zip) (1.2 GB) and optionally the training data sets.<br/>
 
-* <b>Installing the Conda Environment (Optional)</b><br/>We prepared a pre-configured Conda environment with all required libraries for the generative model. Conda is available <a href="https://www.anaconda.com" target="_blank">here</a>. After setting up Conda, you can install the required environment using the included <code style="color: black;font-size: 14px;">./autodecoder/conda_env.yml</code> file:<br/>
+* <b>Installing the Conda Environment (Optional)</b><br/>We prepared a pre-configured conda environment with all required libraries for the generative model. Conda is available <a href="https://www.anaconda.com" target="_blank">here</a>. After setting up Conda, you can install the required environment using the included <code style="color: black;font-size: 14px;">./autodecoder/conda_env.yml</code> file:<br/>
 ``$> conda env create -f conda_env.yml``
 
 * <b>Shape Reconstruction</b><br/>To reconstruct the learned shape SDFs using the pre-trained models, execute the script <code style="color: black;font-size: 14px;">./autodecoder/test.py</code> with parameters specifying the desired model directory (where <code style="color: black;font-size: 14px;">plat</code> stands for <i>Platynereis dumerilii</i> cells, <code style="color: black;font-size: 14px;">cele</code> for <i>C. elegans</i> cells, and <code style="color: black;font-size: 14px;">filo</code> for filopodial cells):<br/>
